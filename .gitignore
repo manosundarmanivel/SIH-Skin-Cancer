@@ -1,0 +1,215 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+/images
+# Flutter/Dart specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub/
+/build/
+.dart_plugins/
+*.iml
+
+# VS Code specific
+.vscode/
+.code-workspace
+
+# Android specific
+/build/
+.gradle/
+/local.properties
+
+# iOS specific
+Pods/
+.build/
+*.xcworkspace/
+*.xcuserdatad/
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Web specific
+/build/web/
+/webdev/
+
+# Test specific
+*.test_output
+.dart_tool/
+.packages
+
+# IntelliJ IDEA specific
+.idea/
+*.iws
+*.ipr
+*.iml
+*.iws
+*.bak
+*.tmp
+
+# Android Studio specific
+*.iml
+.idea/
+.gradle/
+/captures/
+
+# Visual Studio Code folders
+.vscode/
+.idea/
+
+# macOS specific
+.DS_Store
+
+# Flutter Package specific
+.packages
+.pub-cache/
+
+# Xcode
+.xcodeproj/
+.DS_Store
+*.xcuserdatad/
+*.xcworkspace/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Android
+/build/
+/local.properties
+
+# iOS
+/ios/Runner/GeneratedPluginRegistrant.h
+/ios/Runner/GeneratedPluginRegistrant.m
+/ios/Runner/GoogleService-Info.plist
+/ios/Flutter/Flutter.framework/
+
+# Temporary files
+*.swp
+*~
+*.bak
+
+# Gradle
+.gradle/
+gradlew
+gradlew.bat
+gradle-wrapper.properties
+!gradle-wrapper.properties
+
+# Compiled class file
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# JetBrains
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Eclipse
+*.project
+*.pydevproject
+.metadata/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+# External tool builders
+.externalToolBuilders/
+*.launch
+
+# Dart
+.dart_tool/
+.dart_plugins/
+.dart2/
+.dartdeps/
+.packages
+.pub/
+.build/
+# Bazel
+.bazel
+.bazelrc
+
+# pub package
+.packages
+
+# VS Code directories
+.vscode/
+.idea/
+
+# Gradle
+.gradle/
+*.log
+gradle-wrapper.properties
+.idea/
+build/
