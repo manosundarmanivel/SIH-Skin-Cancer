@@ -17,9 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 class Details extends StatefulWidget {
   final String imagePath;
-  final String? user;
+  final String? user1;
   final Map<String, dynamic>? result;
-  Details({super.key, required this.imagePath, required this.result,required this.user});
+  final String skin;
+  Details({super.key, required this.imagePath, required this.result,required this.user1,required this.skin});
 
   @override
   State<Details> createState() => _DetailsState();
@@ -167,8 +168,7 @@ class _DetailsState extends State<Details> {
                             );
                           }).toList(),
                         ),
-                        (widget.result!['result'].length > 1)
-                            ? Padding(
+                        if (widget.result!['result'].length > 1) Padding(
                                 padding: const EdgeInsets.all(1),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,6 +330,7 @@ class _DetailsState extends State<Details> {
                                             if (post == 0) {
                                               post = 1;
                                               try {
+
                                                 final c = DateTime.timestamp();
 
                                                 final refe = FirebaseStorage
@@ -359,14 +360,26 @@ class _DetailsState extends State<Details> {
                                                         .getDownloadURL();
                                                 final String url1 =
                                                     downloadUrl1.toString();
+                                                String? userType = await getUserType();
+                                                if(userType!=null)
+                                                  {
+                                                    DocumentSnapshot doc = await FirebaseFirestore.instance.collection(userType).doc(
+                                                        FirebaseAuth.instance.currentUser!.email).get();
+                                                    int val = doc[widget.skin];
+                                                    print(val);
+                                                    await FirebaseFirestore.instance.collection(userType).doc(FirebaseAuth.instance.currentUser!.email).update({
+                                                      widget.skin : val+1
+                                                    });
+                                                  }
 
+                                                if(userType!=null)
                                                 await FirebaseFirestore.instance
-                                                    .collection(FirebaseAuth
-                                                        .instance
-                                                        .currentUser!
-                                                        .email
-                                                        .toString())
-                                                    .doc("posts")
+                                                    .collection(userType)
+                                                    .doc(FirebaseAuth
+                                                    .instance
+                                                    .currentUser!
+                                                    .email
+                                                    .toString())
                                                     .collection("posts")
                                                     .add({
                                                   "time": DateTime.timestamp(),
@@ -434,7 +447,7 @@ class _DetailsState extends State<Details> {
                                         ),
                                       ),
                                     ),
-                                    Padding(
+                                    if (widget.user1 == "Doctor") Padding(
                                       padding: EdgeInsets.only(top: 10,left: 5,right: 5),
 
                                       child: Column(
@@ -518,7 +531,9 @@ class _DetailsState extends State<Details> {
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: <Widget>[
                                                               OutlinedButton(
-                                                                  onPressed: (){},
+                                                                  onPressed: (){
+                                                                    Navigator.pop(context,"Ok");
+                                                                  },
                                                                   child: Text("Cancel")
                                                               ),
                                                               OutlinedButton(
@@ -553,19 +568,27 @@ class _DetailsState extends State<Details> {
                                                                     final String url1 =
                                                                     downloadUrl1.toString();
 
-                                                                    await FirebaseFirestore.instance.collection("Reinforcement").doc().set({
+                                                                   var docref = await FirebaseFirestore.instance.collection("Reinforcement").doc();
+                                                                   await docref.set({
                                                                       "Disease":selectedDisease,
                                                                       "Reason": reason.text.toString(),
                                                                       "Yes":0,
                                                                       "No":0,
                                                                       "Active":true,
+                                                                      "Voters":[],
                                                                       "user":FirebaseAuth.instance.currentUser!.email.toString(),
                                                                       "predictedDisease":"No Disease",
                                                                       "imageUrl":url1,
                                                                       "time": DateTime
                                                                           .timestamp(),
+
+                                                                    });
+                                                                    String docid = docref.id;
+                                                                    await FirebaseFirestore.instance.collection('Reinforcement').doc(docid).update({
+                                                                      "Docid":docid
                                                                     });
                                                                     Notification(url1,selectedDisease,reason.text.toString());
+                                                                    Navigator.pop(context,"ok");
                                                                   },
 
                                                                   child: Text("Submit")
@@ -589,11 +612,10 @@ class _DetailsState extends State<Details> {
 
 
 
-                                    ),
+                                    ) else SizedBox()
                                   ],
                                 ),
-                              )
-                            : Padding(
+                              ) else Padding(
                                 padding: const EdgeInsets.all(1),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -849,6 +871,7 @@ class _DetailsState extends State<Details> {
                                               ),
                                             ),
                                           ),
+                                          (widget.user1=="Doctor")?
                                           Padding(
                                             padding: EdgeInsets.only(top: 10,left: 5,right: 5),
 
@@ -933,7 +956,9 @@ class _DetailsState extends State<Details> {
                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                   children: <Widget>[
                                                                     OutlinedButton(
-                                                                        onPressed: (){},
+                                                                        onPressed: (){
+                                                                          Navigator.pop(context,"ok");
+                                                                        },
                                                                         child: Text("Cancel")
                                                                     ),
                                                                     OutlinedButton(
@@ -967,20 +992,26 @@ class _DetailsState extends State<Details> {
                                                                               .getDownloadURL();
                                                                           final String url1 =
                                                                           downloadUrl1.toString();
-
-                                                                          await FirebaseFirestore.instance.collection("Reinforcement").doc().set({
+                                                                          var docref = await FirebaseFirestore.instance.collection("Reinforcement").doc();
+                                                                          await docref.set({
                                                                             "Disease":selectedDisease,
                                                                             "Reason": reason.text.toString(),
                                                                             "Yes":0,
                                                                             "No":0,
                                                                             "Active":true,
+                                                                            "Voters":[],
                                                                             "user":FirebaseAuth.instance.currentUser!.email.toString(),
                                                                             "predictedDisease":"No Disease",
                                                                             "imageUrl":url1,
                                                                             "time": DateTime
                                                                                 .timestamp(),
                                                                           });
+                                                                          String docid = docref.id;
+                                                                          await FirebaseFirestore.instance.collection('Reinforcement').doc(docid).update({
+                                                                            "Docid":docid
+                                                                          });
                                                                           Notification(url1,selectedDisease,reason.text.toString());
+                                                                          Navigator.pop(context,"ok");
                                                                         },
 
                                                                         child: Text("Submit")
@@ -1004,7 +1035,8 @@ class _DetailsState extends State<Details> {
 
 
 
-                                          ),
+                                          )
+                                          :SizedBox()
                                         ],
                                       ),
                                     ),

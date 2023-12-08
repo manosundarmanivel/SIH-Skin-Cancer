@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:novalabs/GoogleSignin.dart';
 import 'package:novalabs/camera.dart';
 
 import 'package:novalabs/Signin.dart';
@@ -97,7 +98,7 @@ class _ProfileState extends State<Profile> {
             await FirebaseAuth.instance.signOut();
             PersistentNavBarNavigator.pushNewScreen(
               context,
-              screen: Signin(),
+              screen: GoogleSignin(),
               withNavBar: false,
               pageTransitionAnimation: PageTransitionAnimation.fade,
             );

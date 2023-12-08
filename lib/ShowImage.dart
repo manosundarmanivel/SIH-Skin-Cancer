@@ -10,7 +10,8 @@ import 'camera.dart';
 class ShowImage extends StatefulWidget {
   final String imagePath;
   final String? userType;
-  ShowImage({Key? key, required this.imagePath, required this.userType}) : super(key: key);
+  final String skin;
+  ShowImage({Key? key, required this.imagePath, required this.userType,required this.skin}) : super(key: key);
 
   @override
   State<ShowImage> createState() => _ShowImageState();
@@ -63,7 +64,7 @@ class _ShowImageState extends State<ShowImage> {
                       });
 
                       request = http.MultipartRequest('POST',
-                          Uri.parse('http://51.20.127.40:8000/upload'))
+                          Uri.parse('http://192.168.51.143:8000/upload'))
                         ..files.add(await http.MultipartFile.fromPath(
                             'image', widget.imagePath));
 
@@ -81,7 +82,7 @@ class _ShowImageState extends State<ShowImage> {
                         });
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => Details(
-                                imagePath: widget.imagePath, result: dataMap, user:widget.userType)));
+                                imagePath: widget.imagePath, result: dataMap, user1:widget.userType,skin : widget.skin)));
                       } else {
                         // Handle error
                         ScaffoldMessenger.of(context).showSnackBar(

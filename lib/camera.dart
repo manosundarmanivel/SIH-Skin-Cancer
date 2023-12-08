@@ -382,7 +382,8 @@ class DisplayPictureScreen extends StatelessWidget {
 class TakePictureScreen extends StatefulWidget {
   List<CameraDescription>? cameras;
   final String? user;
-  TakePictureScreen({super.key, required this.cameras,required this.user});
+  final String skin;
+  TakePictureScreen({super.key, required this.cameras,required this.user,required this.skin});
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -410,10 +411,11 @@ class TakePictureScreenState extends State<TakePictureScreen>
     // minzoomoffset=_controller.getMinZoomLevel();
     _controller.initialize().then((_) {
       // Set autofocus mode
-      _controller.setFlashMode(FlashMode.auto);
+      _controller.setFlashMode(FlashMode.off);
       if (!mounted) {
         return;
       }
+
       setState(() {});
     });
   }
@@ -507,7 +509,7 @@ class TakePictureScreenState extends State<TakePictureScreen>
                 });
                 final image = await _controller.takePicture();
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ShowImage(imagePath: image.path,userType: widget.user)));
+                    builder: (context) => ShowImage(imagePath: image.path,userType: widget.user,skin : widget.skin)));
                 setState(() {
                   indicator = 0;
                 });

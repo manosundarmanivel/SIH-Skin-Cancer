@@ -14,18 +14,22 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Details2 extends StatefulWidget {
   final String imagePath;
   final List<DocumentSnapshot<Object?>> result;
   int index;
+  final String? usertype;
 
   Details2(
       {super.key,
       required this.imagePath,
       required this.result,
-      required this.index});
+      required this.index,
+        required this.usertype,
+      });
 
   @override
   State<Details2> createState() => _Details2State();
@@ -340,6 +344,7 @@ class _Details2State extends State<Details2> {
                                         ),
                                       ),
                                     ),
+                                    (widget.usertype=='Doctor')?
                                     Padding(
                                       padding: EdgeInsets.only(top: 10,left: 5,right: 5),
 
@@ -424,7 +429,9 @@ class _Details2State extends State<Details2> {
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: <Widget>[
                                                                OutlinedButton(
-                                                                   onPressed: (){},
+                                                                   onPressed: (){
+                                                                     Navigator.pop(context,"ok");
+                                                                   },
                                                                    child: Text("Cancel")
                                                                ),
                                                                 OutlinedButton(
@@ -465,6 +472,7 @@ class _Details2State extends State<Details2> {
                                                                         "Yes":0,
                                                                         "No":0,
                                                                         "Active":true,
+                                                                        "Voters":[],
                                                                         "user":FirebaseAuth.instance.currentUser!.email.toString(),
                                                                         "predictedDisease":"No Disease",
                                                                         "imageUrl":url1,
@@ -472,6 +480,7 @@ class _Details2State extends State<Details2> {
                                                                             .timestamp(),
                                                                       });
                                                                       Notification(url1,selectedDisease,reason.text.toString());
+                                                                      Navigator.pop(context,"ok");
                                                                     },
 
                                                                     child: Text("Submit")
@@ -495,8 +504,8 @@ class _Details2State extends State<Details2> {
 
 
 
-                                    ),
-
+                                    ):
+                                        SizedBox()
                                   ],
                                 ),
                               )
@@ -645,6 +654,7 @@ class _Details2State extends State<Details2> {
                                         ),
                                       ),
                                     ),
+                                    (widget.usertype=='Doctor')?
                                     Padding(
                                       padding: EdgeInsets.only(top: 10,left: 5,right: 5),
 
@@ -729,7 +739,9 @@ class _Details2State extends State<Details2> {
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: <Widget>[
                                                               OutlinedButton(
-                                                                  onPressed: (){},
+                                                                  onPressed: (){
+                                                                    Navigator.pop(context,"ok");
+                                                                  },
                                                                   child: Text("Cancel")
                                                               ),
                                                               OutlinedButton(
@@ -770,6 +782,7 @@ class _Details2State extends State<Details2> {
                                                                       "Yes":0,
                                                                       "No":0,
                                                                       "Active":true,
+                                                                      "Voters":[],
                                                                       "user":FirebaseAuth.instance.currentUser!.email.toString(),
                                                                       "predictedDisease":"No Disease",
                                                                       "imageUrl":url1,
@@ -777,6 +790,7 @@ class _Details2State extends State<Details2> {
                                                                           .timestamp(),
                                                                     });
                                                                     Notification(url1,selectedDisease,reason.text.toString());
+                                                                    Navigator.pop(context,"ok");
                                                                   },
 
                                                                   child: Text("Submit")
@@ -800,7 +814,8 @@ class _Details2State extends State<Details2> {
 
 
 
-                                    ),
+                                    ):
+                                        SizedBox()
                                   ],
                                 ),
                               ),
@@ -834,4 +849,9 @@ class _Details2State extends State<Details2> {
       }
     });
   }
+  Future<String?> getUserType() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userType');
+  }
+
 }

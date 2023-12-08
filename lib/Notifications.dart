@@ -11,6 +11,7 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationState extends State<NotificationScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,40 +68,127 @@ class _NotificationState extends State<NotificationScreen> {
                                               onPressed:  () => showDialog<String>(
                                                 context: context,
                                                 builder: (BuildContext context) => AlertDialog(
-                                                  title: const Text('Your Assumption'),
+                                                  title: Center(child: const Text('Your Assumption')),
                                                   content: 
                                                      Container(
-                                                       height: 300,
+                                                       height: 330,
                                                        child: Column(
                                                          children: [
                                                            Align(
                                                             alignment: Alignment.topCenter,
-                                                            child: Container(
-                                                              height: 110,
-                                                              width: 60,
-                                                              color: Colors.blue,
-                                                            ),
+                                                            child: Image.network(nn[index]["imageUrl"],width: 200,height: 150,fit: BoxFit.cover,)
                                                            ),
-                                                           Row(
-                                                             children: [
-                                                               Text("Model Predicted: ",style: GoogleFonts.poppins(fontWeight: FontWeight.bold,fontSize: 18),),
-                                                               Text(nn[index]["Disease"],style: GoogleFonts.poppins(fontSize: 18),)
-                                                             ],
+                                                           Padding(
+                                                             padding: const EdgeInsets.only(top: 8.0),
+                                                             child: Row(
+                                                               children: [
+                                                                 Text("Model Predicted: ",style: GoogleFonts.poppins(fontWeight: FontWeight.bold,fontSize: 16),),
+                                                                 Container(
+                                                                   width: 90,
+                                                                     child: SingleChildScrollView(
+                                                                       scrollDirection: Axis.horizontal,
+                                                                         child: Text(nn[index]["Disease"],style: GoogleFonts.poppins(fontSize: 16),)))
+                                                               ],
+                                                             ),
                                                            ),
+                                                           Padding(
+                                                             padding: const EdgeInsets.only(top: 8.0),
+                                                             child: Row(
+                                                               children: [
+                                                                 Text("Doctor Predicted: ",style: GoogleFonts.poppins(fontWeight: FontWeight.bold,fontSize: 16),),
+                                                                 Container(
+                                                                     width: 90,
+                                                                     child: SingleChildScrollView(
+                                                                         scrollDirection: Axis.horizontal,
+                                                                         child: Text(nn[index]["predictedDisease"],style: GoogleFonts.poppins(fontSize: 16),)))
+                                                               ],
+                                                             ),
+                                                           ),
+                                                           Padding(
+                                                             padding: const EdgeInsets.only(top: 8.0),
+                                                             child: Row(
+                                                               children: [
+                                                                 Text("Reason: ",style: GoogleFonts.poppins(fontWeight: FontWeight.bold,fontSize: 16),),
+                                                                 Container(
+                                                                     width: 180,
+                                                                     child: Text(nn[index]["Reason"],style: GoogleFonts.poppins(fontSize: 16),))
+                                                               ],
+                                                             ),
+                                                           ),
+                                                           (!(nn[index]["Voters"] ?? []).contains(FirebaseAuth.instance.currentUser!.email))?
+                                                           Padding(
+                                                             padding: const EdgeInsets.all(8.0),
+                                                             child: Row(
+                                                               children: [
+                                                                 Container(
+                                                                     width : 70,
+                                                                     decoration : BoxDecoration(
+                                                                         color: Colors.red,
+                                                                         borderRadius: BorderRadius.circular(10)
+                                                                     ),
+                                                                     child: TextButton(onPressed: ()async{
 
+                                                                       DocumentSnapshot doc = await FirebaseFirestore.instance.collection("Reinforcement").doc(nn[index]["Docid"]).get();
+                                                                       int val = doc["No"];
+                                                                       await FirebaseFirestore.instance.collection('Reinforcement').doc(nn[index]["Docid"]).update({
+                                                                         "No":val+1
+                                                                       });
+                                                                       await FirebaseFirestore.instance.collection('Reinforcement').doc(nn[index]["Docid"]).update({
+                                                                         "Voters":FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.email])
+                                                                       });
+
+                                                                       Navigator.pop(context,"Ok");
+                                                                     }, child: Text("No",style: GoogleFonts.poppins(color: Colors.white,fontWeight: FontWeight.w500),))
+
+                                                                 ),
+                                                                 Container(
+                                                                     width : 70,
+                                                                     decoration : BoxDecoration(
+                                                                          color: Colors.green,
+                                                                          borderRadius: BorderRadius.circular(10)
+                                                                      ),
+                                                                     child: TextButton(onPressed: ()async{
+                                                                       DocumentSnapshot doc = await FirebaseFirestore.instance.collection("Reinforcement").doc(nn[index]["Docid"]).get();
+                                                                       int val = doc["Yes"];
+                                                                       await FirebaseFirestore.instance.collection('Reinforcement').doc(nn[index]["Docid"]).update({
+                                                                       "Yes":val+1
+                                                                       });
+                                                                       await FirebaseFirestore.instance.collection('Reinforcement').doc(nn[index]["Docid"]).update({
+                                                                         "Voters":FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.email])
+                                                                       });
+
+                                                                       Navigator.pop(context,"Ok");
+
+                                                                     }, child: Text("Yes",style: GoogleFonts.poppins(color: Colors.white),))
+
+                                                                 )
+
+                                                               ],
+                                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                             ),
+                                                           )
+                                                            :
+                                                             Padding(
+                                                               padding: const EdgeInsets.all(8.0),
+                                                               child: Row(
+                                                                 children: [
+                                                                   Container(
+                                                                      width : 80,
+                                                                      height: 40,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Colors.green,
+                                                                        borderRadius: BorderRadius.circular(10)
+                                                                      ),
+                                                                       child: Center(child: Text("Voted",style: GoogleFonts.poppins(fontWeight: FontWeight.w500,fontSize: 16,color: Colors.white),))),
+
+                                                                 ],
+                                                                 mainAxisAlignment: MainAxisAlignment.center,
+                                                               )
+                                                             )
                                                          ],
                                                        ),
                                                      ),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      onPressed: () => Navigator.pop(context, 'Cancel'),
-                                                      child: const Text('Cancel'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () => Navigator.pop(context, 'OK'),
-                                                      child: const Text('OK'),
-                                                    ),
-                                                  ],
+
                                                 ),
                                               ),
                                               child: Container(

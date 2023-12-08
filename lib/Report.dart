@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 import 'Details2.dart';
 
 class Report extends StatefulWidget {
-  const Report({super.key});
+  final String? user;
+  const Report({super.key,required this.user});
 
   @override
   State<Report> createState() => _ReportState();
@@ -96,7 +97,9 @@ class _ReportState extends State<Report> {
                                                                         index][
                                                                     "picture_url"],
                                                                 result: nn,
-                                                                index: index)));
+                                                                index: index,
+                                                                usertype: widget.user
+                                                            )));
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(

@@ -1,3 +1,6 @@
+
+import 'dart:ui';
+
 import 'package:camera/camera.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:novalabs/Details2.dart';
+import 'package:novalabs/GoogleSignin.dart';
 import 'package:novalabs/HomePage.dart';
 import 'package:novalabs/Notifications.dart';
 import 'package:novalabs/Test.dart';
@@ -56,7 +60,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: (FirebaseAuth.instance.currentUser != null) ? HomePage() : Signin(),
+      // home: (FirebaseAuth.instance.currentUser != null) ? HomePage() : Signin(),
+      home: GoogleSignin(),
     );
   }
 }
@@ -538,7 +543,7 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 // }
-
+List<String> listval1 = <String>['Head','Body','Left Hand','Right Hand','Left Leg','Right Leg'];
 class HomePage extends StatefulWidget {
 
   const HomePage({Key? key}) : super(key: key);
@@ -1011,7 +1016,8 @@ class _HomePageState extends State<HomePage> {
                                         int itemIndex = startIndex + index;
 
                                         return TextButton(
-                                          onPressed: () {
+                                          onPressed: ()async {
+                                            String? user = await getUserType();
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
@@ -1020,7 +1026,9 @@ class _HomePageState extends State<HomePage> {
                                                                     itemIndex]
                                                                 ["picture_url"],
                                                             result: nn,
-                                                            index: itemIndex)));
+                                                            index: itemIndex,
+                                                          usertype: user,
+                                                        )));
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
@@ -1275,13 +1283,8 @@ class _HomePageState extends State<HomePage> {
               child: FloatingActionButton(
                 onPressed: () async{
                   String? userType = await getUserType();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TakePictureScreen(
-                                cameras: cameras,
-                                user : userType,
-                              )));
+                  _showMyDialog(cameras, userType, context);
+
                 },
                 child: Icon(
                   Icons.camera,
@@ -1294,11 +1297,12 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {
+              icon: Icon(Icons.book),
+              onPressed: () async{
+                String? user =  await getUserType();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Report(),
+                    builder: (context) => Report(user : user),
                   ),
                 );
               },
@@ -1325,6 +1329,70 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
+    );
+  }
+  Future<void> _showMyDialog(List<CameraDescription>? cameras, String? type, BuildContext context) async {
+
+    String dropdown = listval1.first;
+    return showDialog<void>(
+
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+
+          title: Text('Your Affected region',style: GoogleFonts.poppins(fontWeight: FontWeight.bold),),
+          content: SingleChildScrollView(
+            child: Container(
+
+              child: ListBody(
+                children: <Widget>[
+                  DropdownMenu<String>(
+                    initialSelection: listval1.first,
+                    width: MediaQuery.of(context).size.width*0.67,
+
+                    onSelected: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        dropdown= value!;
+                      });
+                    },
+                    dropdownMenuEntries: listval1.map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(value: value, label: value);
+
+                    }).toList(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color:Color.fromRGBO(86, 128, 227, 1),
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: TextButton(
+                        onPressed: ()async{
+
+                           Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TakePictureScreen(
+                                    cameras: cameras,
+                                    user : type,
+                                    skin : dropdown
+                                  )));
+
+                        },
+                        child: Text("Next",style: GoogleFonts.poppins(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+        );
+      },
     );
   }
 }
