@@ -64,7 +64,7 @@ class _ShowImageState extends State<ShowImage> {
                       });
 
                       request = http.MultipartRequest('POST',
-                          Uri.parse('http://192.168.51.143:8000/upload'))
+                          Uri.parse('http://192.168.19.64:8000/upload'))
                         ..files.add(await http.MultipartFile.fromPath(
                             'image', widget.imagePath));
 

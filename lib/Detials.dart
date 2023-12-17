@@ -872,169 +872,171 @@ class _DetailsState extends State<Details> {
                                             ),
                                           ),
                                           (widget.user1=="Doctor")?
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 10,left: 5,right: 5),
+                                          SingleChildScrollView(
+                                            child: Padding(
+                                              padding: EdgeInsets.only(top: 10,left: 5,right: 5),
 
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  "If you are not satisfied with the result",
-                                                  softWrap: true,
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                      16), // Enable text wra
-                                                ),
-                                                TextButton(onPressed: ()=>showDialog<String>(
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    "If you are not satisfied with the result",
+                                                    softWrap: true,
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                        16), // Enable text wra
+                                                  ),
+                                                  TextButton(onPressed: ()=>showDialog<String>(
 
-                                                    context: context,
+                                                      context: context,
 
-                                                    builder: (BuildContext context) {
-                                                      TextEditingController disease=new TextEditingController();
-                                                      TextEditingController reason=new TextEditingController();
+                                                      builder: (BuildContext context) {
+                                                        TextEditingController disease=new TextEditingController();
+                                                        TextEditingController reason=new TextEditingController();
 
 
-                                                      return SingleChildScrollView(
-                                                        child: AlertDialog(
+                                                        return SingleChildScrollView(
+                                                          child: AlertDialog(
 
-                                                          title: Column(
-                                                            children: [
+                                                            title: Column(
+                                                              children: [
 
-                                                              Center(child: Text("Your Assumption")),
-                                                              Padding(
-                                                                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                                                                child: DropdownSearch<String>(
-                                                                  popupProps: PopupProps.menu(
-                                                                    showSelectedItems: true,
-                                                                    showSearchBox: true,
-
-                                                                  ),
-                                                                  items: Diseases,
-                                                                  dropdownDecoratorProps: DropDownDecoratorProps(
-                                                                    dropdownSearchDecoration: InputDecoration(
-                                                                        labelText: "Disease",
-                                                                        hintText: "Enter your assumption",
-
-                                                                        border: OutlineInputBorder(
-                                                                          borderRadius: BorderRadius.circular(10),
-                                                                        )
-
-                                                                    ),
-                                                                  ),
-                                                                  onChanged: (newValue){
-                                                                    setState((){
-                                                                      selectedDisease = newValue!;
-                                                                    });
-                                                                  },
-                                                                  selectedItem: selectedDisease,
-                                                                ),
-                                                              ),
-                                                              Padding(
+                                                                Center(child: Text("Your Assumption")),
+                                                                Padding(
                                                                   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                                                                  child: TextFormField(
+                                                                  child: DropdownSearch<String>(
+                                                                    popupProps: PopupProps.menu(
+                                                                      showSelectedItems: true,
+                                                                      showSearchBox: true,
 
-                                                                    validator: (value) {
-                                                                      if (value!.isEmpty) {
-                                                                        return "Please enter password";
-                                                                      }
-                                                                      return null;
+                                                                    ),
+                                                                    items: Diseases,
+                                                                    dropdownDecoratorProps: DropDownDecoratorProps(
+                                                                      dropdownSearchDecoration: InputDecoration(
+                                                                          labelText: "Disease",
+                                                                          hintText: "Enter your assumption",
+
+                                                                          border: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(10),
+                                                                          )
+
+                                                                      ),
+                                                                    ),
+                                                                    onChanged: (newValue){
+                                                                      setState((){
+                                                                        selectedDisease = newValue!;
+                                                                      });
                                                                     },
-                                                                    controller: reason,
-                                                                    decoration: InputDecoration(
-                                                                      filled: true, //<-- SEE HERE
-                                                                      fillColor: Colors.white,
-                                                                      border: OutlineInputBorder(
-                                                                          borderRadius: BorderRadius.circular(10)),
-                                                                      hintText: 'Enter your reason',
-                                                                    ),
-
-                                                                  )),
-
-                                                              SizedBox(height: 10,),
-                                                              Padding(
-                                                                padding: const EdgeInsets.all(20.0),
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  children: <Widget>[
-                                                                    OutlinedButton(
-                                                                        onPressed: (){
-                                                                          Navigator.pop(context,"ok");
-                                                                        },
-                                                                        child: Text("Cancel")
-                                                                    ),
-                                                                    OutlinedButton(
-                                                                        onPressed: ()async{
-                                                                          final c = DateTime.timestamp();
-
-                                                                          final refe = FirebaseStorage
-                                                                              .instance
-                                                                              .ref()
-                                                                              .child(FirebaseAuth.instance
-                                                                              .currentUser!.uid)
-                                                                              .child(c.toString())
-                                                                              .child("Reinforcement");
-
-                                                                          await refe.putFile(
-                                                                              File(widget.imagePath),
-                                                                              SettableMetadata(
-                                                                                  contentType:
-                                                                                  "image/png"));
-
-                                                                          final downloadUrl1 =
-                                                                          await FirebaseStorage
-                                                                              .instance
-                                                                              .ref()
-                                                                              .child(FirebaseAuth
-                                                                              .instance
-                                                                              .currentUser!
-                                                                              .uid)
-                                                                              .child(c.toString())
-                                                                              .child("Reinforcement")
-                                                                              .getDownloadURL();
-                                                                          final String url1 =
-                                                                          downloadUrl1.toString();
-                                                                          var docref = await FirebaseFirestore.instance.collection("Reinforcement").doc();
-                                                                          await docref.set({
-                                                                            "Disease":selectedDisease,
-                                                                            "Reason": reason.text.toString(),
-                                                                            "Yes":0,
-                                                                            "No":0,
-                                                                            "Active":true,
-                                                                            "Voters":[],
-                                                                            "user":FirebaseAuth.instance.currentUser!.email.toString(),
-                                                                            "predictedDisease":"No Disease",
-                                                                            "imageUrl":url1,
-                                                                            "time": DateTime
-                                                                                .timestamp(),
-                                                                          });
-                                                                          String docid = docref.id;
-                                                                          await FirebaseFirestore.instance.collection('Reinforcement').doc(docid).update({
-                                                                            "Docid":docid
-                                                                          });
-                                                                          Notification(url1,selectedDisease,reason.text.toString());
-                                                                          Navigator.pop(context,"ok");
-                                                                        },
-
-                                                                        child: Text("Submit")
-                                                                    ),
-                                                                  ],
+                                                                    selectedItem: selectedDisease,
+                                                                  ),
                                                                 ),
-                                                              )
-                                                            ],
+                                                                Padding(
+                                                                    padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                                                    child: TextFormField(
+
+                                                                      validator: (value) {
+                                                                        if (value!.isEmpty) {
+                                                                          return "Please enter password";
+                                                                        }
+                                                                        return null;
+                                                                      },
+                                                                      controller: reason,
+                                                                      decoration: InputDecoration(
+                                                                        filled: true, //<-- SEE HERE
+                                                                        fillColor: Colors.white,
+                                                                        border: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(10)),
+                                                                        hintText: 'Enter your reason',
+                                                                      ),
+
+                                                                    )),
+
+                                                                SizedBox(height: 10,),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.all(20.0),
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: <Widget>[
+                                                                      OutlinedButton(
+                                                                          onPressed: (){
+                                                                            Navigator.pop(context,"ok");
+                                                                          },
+                                                                          child: Text("Cancel")
+                                                                      ),
+                                                                      OutlinedButton(
+                                                                          onPressed: ()async{
+                                                                            final c = DateTime.timestamp();
+
+                                                                            final refe = FirebaseStorage
+                                                                                .instance
+                                                                                .ref()
+                                                                                .child(FirebaseAuth.instance
+                                                                                .currentUser!.uid)
+                                                                                .child(c.toString())
+                                                                                .child("Reinforcement");
+
+                                                                            await refe.putFile(
+                                                                                File(widget.imagePath),
+                                                                                SettableMetadata(
+                                                                                    contentType:
+                                                                                    "image/png"));
+
+                                                                            final downloadUrl1 =
+                                                                            await FirebaseStorage
+                                                                                .instance
+                                                                                .ref()
+                                                                                .child(FirebaseAuth
+                                                                                .instance
+                                                                                .currentUser!
+                                                                                .uid)
+                                                                                .child(c.toString())
+                                                                                .child("Reinforcement")
+                                                                                .getDownloadURL();
+                                                                            final String url1 =
+                                                                            downloadUrl1.toString();
+                                                                            var docref = await FirebaseFirestore.instance.collection("Reinforcement").doc();
+                                                                            await docref.set({
+                                                                              "Disease":selectedDisease,
+                                                                              "Reason": reason.text.toString(),
+                                                                              "Yes":0,
+                                                                              "No":0,
+                                                                              "Active":true,
+                                                                              "Voters":[],
+                                                                              "user":FirebaseAuth.instance.currentUser!.email.toString(),
+                                                                              "predictedDisease":"No Disease",
+                                                                              "imageUrl":url1,
+                                                                              "time": DateTime
+                                                                                  .timestamp(),
+                                                                            });
+                                                                            String docid = docref.id;
+                                                                            await FirebaseFirestore.instance.collection('Reinforcement').doc(docid).update({
+                                                                              "Docid":docid
+                                                                            });
+                                                                            Notification(url1,selectedDisease,reason.text.toString());
+                                                                            Navigator.pop(context,"ok");
+                                                                          },
+
+                                                                          child: Text("Submit")
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+
+
                                                           ),
+                                                        );}
+                                                  ),
 
 
-                                                        ),
-                                                      );}
-                                                ),
+                                                      child: Text("Click here!",style: TextStyle(fontSize: 16,),textAlign: TextAlign.center,)
+                                                  ),
+                                                ],
+                                              ),
 
 
-                                                    child: Text("Click here!",style: TextStyle(fontSize: 16,),textAlign: TextAlign.center,)
-                                                ),
-                                              ],
+
                                             ),
-
-
-
                                           )
                                           :SizedBox()
                                         ],

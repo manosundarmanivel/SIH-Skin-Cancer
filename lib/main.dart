@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:novalabs/BodyModel.dart';
 import 'package:novalabs/Details2.dart';
 import 'package:novalabs/GoogleSignin.dart';
 import 'package:novalabs/HomePage.dart';
@@ -1315,7 +1316,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Profile(),
+                    builder: (context) => BodyModel(),
                   ),
                 );
               },
