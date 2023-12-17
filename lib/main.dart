@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
@@ -36,6 +35,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   print("Handling a background message: ${message.messageId}");
 }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -55,15 +55,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Novalabs',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: (FirebaseAuth.instance.currentUser != null) ? HomePage() : Signin(),
-      home: GoogleSignin(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Novalabs',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        // home: (FirebaseAuth.instance.currentUser != null) ? HomePage() : Signin(),
+        home: HomePage());
   }
 }
 
@@ -544,11 +543,17 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 // }
-List<String> listval1 = <String>['Head','Body','Left Hand','Right Hand','Left Leg','Right Leg'];
+List<String> listval1 = <String>[
+  'Head',
+  'Body',
+  'Left Hand',
+  'Right Hand',
+  'Left Leg',
+  'Right Leg'
+];
+
 class HomePage extends StatefulWidget {
-
   const HomePage({Key? key}) : super(key: key);
-
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -581,31 +586,32 @@ class _HomePageState extends State<HomePage> {
     var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     return format.format(date);
   }
+
   @override
-  String? mtoken="";
-  void initState(){
+  String? mtoken = "";
+  void initState() {
     super.initState();
     req();
     get();
     initInfo();
   }
-  initInfo()async{
+
+  initInfo() async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-    var androidInitialize = const AndroidInitializationSettings('@mipmap/ic_launcher');
+        FlutterLocalNotificationsPlugin();
+    var androidInitialize =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettings = InitializationSettings(
       android: androidInitialize,
-
     );
-    void _onNotificationTap(NotificationResponse notificationResponse){
+    void _onNotificationTap(NotificationResponse notificationResponse) {
       // Handle notification tap
 
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => const Universal()),
       // );
-
     }
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -617,34 +623,44 @@ class _HomePageState extends State<HomePage> {
       print('Message data: ${message.data}');
 
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification!.title}');
+        print(
+            'Message also contained a notification: ${message.notification!.title}');
       }
-      BigTextStyleInformation bigTextStyleInformation=BigTextStyleInformation(
-        message.notification!.body.toString(),htmlFormatBigText: true,
-        contentTitle: message.notification!.title.toString(),htmlFormatContentTitle: true,
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+        message.notification!.body.toString(),
+        htmlFormatBigText: true,
+        contentTitle: message.notification!.title.toString(),
+        htmlFormatContentTitle: true,
       );
-      AndroidNotificationDetails androidNotificationDetails=AndroidNotificationDetails('dbnoti', 'dbnoti',importance: Importance.max,styleInformation: bigTextStyleInformation,priority: Priority.high,playSound: true,);
-      NotificationDetails notificationDetails=NotificationDetails(android: androidNotificationDetails);
-      await flutterLocalNotificationsPlugin.show(0, message.notification?.title, message.notification?.body, notificationDetails,payload: message.data['title']);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails(
+        'dbnoti',
+        'dbnoti',
+        importance: Importance.max,
+        styleInformation: bigTextStyleInformation,
+        priority: Priority.high,
+        playSound: true,
+      );
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
+          message.notification?.body, notificationDetails,
+          payload: message.data['title']);
     });
-
-
-
-
   }
-  void get()async{
+
+  void get() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
-    mtoken= fcmToken!;
+    mtoken = fcmToken!;
 
-    String user =await FirebaseAuth.instance.currentUser!.email.toString();
-    await FirebaseFirestore.instance.collection("Usertokens").doc(user).set({
-      "tokens":mtoken,
-      "user":user
-    }).then((value) => print("Successful"));
+    String user = await FirebaseAuth.instance.currentUser!.email.toString();
+    await FirebaseFirestore.instance.collection("Usertokens").doc(user).set(
+        {"tokens": mtoken, "user": user}).then((value) => print("Successful"));
   }
-  void req()async{
-    FirebaseMessaging messaging=FirebaseMessaging.instance;
-    NotificationSettings settings=await messaging.requestPermission(
+
+  void req() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -653,22 +669,20 @@ class _HomePageState extends State<HomePage> {
       provisional: false,
       sound: true,
     );
-    if(settings.authorizationStatus==AuthorizationStatus.authorized){
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted');
-    }
-    else if(settings.authorizationStatus==AuthorizationStatus.provisional){
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       print('User granted provisional');
-    }
-    else{
+    } else {
       print('User declined');
     }
   }
+
   Future<String?> getUserType() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('userType');
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -1017,17 +1031,17 @@ class _HomePageState extends State<HomePage> {
                                         int itemIndex = startIndex + index;
 
                                         return TextButton(
-                                          onPressed: ()async {
+                                          onPressed: () async {
                                             String? user = await getUserType();
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         Details2(
-                                                            imagePath: nn[
-                                                                    itemIndex]
-                                                                ["picture_url"],
-                                                            result: nn,
-                                                            index: itemIndex,
+                                                          imagePath: nn[
+                                                                  itemIndex]
+                                                              ["picture_url"],
+                                                          result: nn,
+                                                          index: itemIndex,
                                                           usertype: user,
                                                         )));
                                           },
@@ -1282,10 +1296,9 @@ class _HomePageState extends State<HomePage> {
               width: 60.0,
               height: 60.0,
               child: FloatingActionButton(
-                onPressed: () async{
+                onPressed: () async {
                   String? userType = await getUserType();
                   _showMyDialog(cameras, userType, context);
-
                 },
                 child: Icon(
                   Icons.camera,
@@ -1299,11 +1312,11 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: IconButton(
               icon: Icon(Icons.book),
-              onPressed: () async{
-                String? user =  await getUserType();
+              onPressed: () async {
+                String? user = await getUserType();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Report(user : user),
+                    builder: (context) => Report(user: user),
                   ),
                 );
               },
@@ -1332,58 +1345,61 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  Future<void> _showMyDialog(List<CameraDescription>? cameras, String? type, BuildContext context) async {
 
+  Future<void> _showMyDialog(List<CameraDescription>? cameras, String? type,
+      BuildContext context) async {
     String dropdown = listval1.first;
     return showDialog<void>(
-
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-
-          title: Text('Your Affected region',style: GoogleFonts.poppins(fontWeight: FontWeight.bold),),
+          title: Text(
+            'Your Affected region',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: Container(
-
               child: ListBody(
                 children: <Widget>[
                   DropdownMenu<String>(
                     initialSelection: listval1.first,
-                    width: MediaQuery.of(context).size.width*0.67,
-
+                    width: MediaQuery.of(context).size.width * 0.67,
                     onSelected: (String? value) {
                       // This is called when the user selects an item.
                       setState(() {
-                        dropdown= value!;
+                        dropdown = value!;
                       });
                     },
-                    dropdownMenuEntries: listval1.map<DropdownMenuEntry<String>>((String value) {
-                      return DropdownMenuEntry<String>(value: value, label: value);
-
+                    dropdownMenuEntries:
+                        listval1.map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(
+                          value: value, label: value);
                     }).toList(),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                          color:Color.fromRGBO(86, 128, 227, 1),
-                          borderRadius: BorderRadius.circular(20)
-                      ),
+                          color: Color.fromRGBO(86, 128, 227, 1),
+                          borderRadius: BorderRadius.circular(20)),
                       child: TextButton(
-                        onPressed: ()async{
-
-                           Navigator.push(
+                        onPressed: () async {
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => TakePictureScreen(
-                                    cameras: cameras,
-                                    user : type,
-                                    skin : dropdown
-                                  )));
-
+                                      cameras: cameras,
+                                      user: type,
+                                      skin: dropdown)));
                         },
-                        child: Text("Next",style: GoogleFonts.poppins(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
+                        child: Text(
+                          "Next",
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
@@ -1391,7 +1407,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
         );
       },
     );
